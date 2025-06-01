@@ -48,36 +48,52 @@ export default function About() {
         </div>
 
         <div className="mt-14">
-          <h2 className="text-2xl font-semibold text-white mb-3">Career Timeline — 12 Years of Experience</h2>
+          <h2 className="text-2xl font-semibold text-white mb-3">Career Timeline — 12+ Years of Experience</h2>
           <div className="space-y-6 border-l-2 border-[#FFD700] pl-6">
             <div>
               <h4 className="font-bold text-[#FFD700]">2024–2025</h4>
-              <p className="text-gray-300">Lead UX Designer – Custom CRM & AI Portfolio Project</p>
+              <p className="text-gray-300">
+                Designer/Developer — Built custom CRM & GenAI-enhanced portfolio. Led Veterans Aid UX/UI strategy.
+              </p>
             </div>
             <div>
-              <h4 className="font-bold text-[#FFD700]">2022–2024</h4>
-              <p className="text-gray-300">UX Consultant – NIH (NHLBI)</p>
+              <h4 className="font-bold text-[#FFD700]">2019–2024</h4>
+              <p className="text-gray-300">
+                UI/UX Designer – USAA (HR Experience Team). Delivered enterprise portals, prototyping, and accessibility standards.
+              </p>
             </div>
             <div>
-              <h4 className="font-bold text-[#FFD700]">2021–2022</h4>
-              <p className="text-gray-300">Lead Designer – USAA HR Business Partners Portal</p>
+              <h4 className="font-bold text-[#FFD700]">2017–2019</h4>
+              <p className="text-gray-300">
+                UI/UX Designer – National Heart, Lung & Blood Institute (NIH). Created design systems, dashboards & intranet redesign.
+              </p>
             </div>
             <div>
-              <h4 className="font-bold text-[#FFD700]">2020–2021</h4>
-              <p className="text-gray-300">Senior UI/UX – Fortra Secure Webmail</p>
+              <h4 className="font-bold text-[#FFD700]">2016–2017</h4>
+              <p className="text-gray-300">
+                Senior SharePoint UI/UX Designer – USPS OIG. Rebuilt responsive portals, designed secure mobile fraud apps.
+              </p>
             </div>
             <div>
-              <h4 className="font-bold text-[#FFD700]">2018–2020</h4>
-              <p className="text-gray-300">UX Engineer – Government & Public Sector Contracts</p>
+              <h4 className="font-bold text-[#FFD700]">2015–2016</h4>
+              <p className="text-gray-300">
+                Front-End Developer – NRG Energy. Led UI/UX development for single-page apps & high-volume marketing sites.
+              </p>
             </div>
             <div>
-              <h4 className="font-bold text-[#FFD700]">2016–2018</h4>
-              <p className="text-gray-300">UI Designer – Healthcare SaaS Applications</p>
+              <h4 className="font-bold text-[#FFD700]">2013–2015</h4>
+              <p className="text-gray-300">
+                UX Designer & Mobile Developer – ExhibitForce. Designed hybrid apps and interfaces using PhoneGap/Xamarin.
+              </p>
             </div>
             <div>
-              <h4 className="font-bold text-[#FFD700]">2012–2016</h4>
-              <p className="text-gray-300">Web Designer / Developer – Freelance & Early Career</p>
+              <h4 className="font-bold text-[#FFD700]">2011–2013</h4>
+              <p className="text-gray-300">
+                Lead Web Designer – TriHealth. Led redesign of 30+ hospital sites, implemented enterprise CMS & analytics.
+              </p>
             </div>
+    
+       
           </div>
         </div>
 

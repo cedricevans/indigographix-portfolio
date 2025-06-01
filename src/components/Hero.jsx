@@ -2,9 +2,18 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const textSlides = [
-  { title: "Crafting Human-Centered Design", subtitle: "12+ years in UI/UX & Frontend" },
-  { title: "Bridging Code and Creativity", subtitle: "From research to deployment" },
-  { title: "Your Next Digital Partner", subtitle: "Innovative. Responsive. Proven." },
+  {
+    title: "Design That Performs. Code That Converts.",
+    subtitle: "Bridging UX thinking with scalable front-end execution.",
+  },
+  {
+    title: "One Designer. Three Platforms.",
+    subtitle: "HTML. React. Flutter — I built a portfolio to prove versatility.",
+  },
+  {
+    title: "From Prototype to Production",
+    subtitle: "I don't just design interfaces. I engineer full-stack solutions.",
+  },
 ];
 
 export default function Hero() {
@@ -13,28 +22,23 @@ export default function Hero() {
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % textSlides.length);
-    }, 4000);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="relative h-[90vh] overflow-hidden">
-      {/* Background Image */}
+      {/* Background */}
       <motion.div
         className="absolute inset-0 bg-center bg-cover z-0"
         style={{ backgroundImage: "url('/assets/hero1.jpeg')" }}
-        animate={{
-          scale: [1, 1.05, 1],
-          opacity: [1, 0.8, 1],
-        }}
-        transition={{ duration: 10, repeat: Infinity }}
+        animate={{ scale: [1, 1.05, 1] }}
+        transition={{ duration: 18, repeat: Infinity }}
       />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0A2342]/90 to-black/80 z-10" />
 
-      {/* Navy Blue + Black Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0A2342]/80 to-black/70 z-10" />
-
-      {/* Animated Text */}
-      <div className="relative z-20 flex flex-col justify-center items-center h-full text-center px-4">
+      {/* Text */}
+      <div className="relative z-20 flex flex-col justify-center items-center h-full text-center px-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={index}
@@ -43,10 +47,10 @@ export default function Hero() {
             exit={{ opacity: 0, y: -30 }}
             transition={{ duration: 0.75 }}
           >
-            <h1 className="text-4xl md:text-6xl font-bold text-[#FFD700] drop-shadow-lg">
+            <h1 className="text-4xl md:text-6xl font-bold text-[#FFD700] leading-tight">
               {textSlides[index].title}
             </h1>
-            <p className="mt-4 text-xl md:text-2xl text-white">
+            <p className="mt-4 text-xl md:text-2xl text-white max-w-3xl">
               {textSlides[index].subtitle}
             </p>
           </motion.div>
