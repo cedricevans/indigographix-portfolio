@@ -5,21 +5,21 @@ import { FaEnvelope, FaLinkedin, FaGithub } from 'react-icons/fa';
 
 const builds = [
   {
-    title: "HTML Version",
+    title: "Advanced HTML5 Design",
     image: "/assets/portfolio-html.jpg",
-    stack: "Static Site",
+    stack: "Interactive Design Demo",
     link: "https://portfolio.cedric-evans.com/",
   },
   {
-    title: "React Version",
+    title: "Next-Gen React Experience",
     image: "/assets/portfolio-react.jpg",
-    stack: "Web App (Current)",
+    stack: "AI-Driven UX + Scalable UI (Current)",
     link: "/case-studies/reactversion",
   },
   {
-    title: "Flutter Version",
+    title: "Cross-Platform Flutter Build",
     image: "/assets/portfolio-flutter.jpg",
-    stack: "Mobile Build",
+    stack: "Native UX Prototyping (In Dev)",
     link: "#",
   },
 ];
