@@ -8,7 +8,7 @@ const builds = [
     title: "HTML Version",
     image: "/assets/portfolio-html.jpg",
     stack: "Static Site",
-    link: "https://www.indigographix.com",
+    link: "https://portfolio.cedric-evans.com/",
   },
   {
     title: "React Version",
@@ -112,3 +112,4 @@ export default function Home() {
     </div>
   );
 }
+
