@@ -11,7 +11,7 @@ export default function Header() {
 
   return (
     <header className="bg-[#0A2342] text-white px-6 py-4 flex justify-between items-center shadow-md z-50 relative">
-      <h1 className="text-lg font-bold text-[#FFD700]">IndigoGraphix</h1>
+      <h1 className="text-lg font-bold text-[#FFD700]">Cedric Evans</h1>
 
       {/* Desktop Nav */}
       <nav className="hidden md:flex space-x-6 text-sm">

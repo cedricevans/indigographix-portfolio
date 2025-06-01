@@ -6,7 +6,7 @@ export default function Footer() {
       <p className="text-sm">
         &copy; {new Date().getFullYear()} IndigoGraphix. All rights reserved.
       </p>
-      <p className="text-xs">Email: hello@indigographix.com</p>
+      <p className="text-xs">Email: cedric.evans@gmail.com</p>
     </footer>
   );
 }
