@@ -20,7 +20,7 @@ const builds = [
     title: "Cross-Platform Flutter Build",
     image: "/assets/portfolio-flutter.jpg",
     stack: "Native UX Prototyping (In Dev)",
-    link: "#",
+    link: "https://flutter.cedric-evans.com/",
   },
 ];
 
