@@ -3,6 +3,9 @@ import Hero from '../components/Hero';
 import { Link } from 'react-router-dom';
 import { FaEnvelope, FaLinkedin, FaGithub } from 'react-icons/fa';
 
+
+
+
 const builds = [
   {
     title: "Advanced HTML5 Design",
@@ -33,10 +36,9 @@ export default function Home() {
 
   return (
     <div className="bg-[#242424] text-[#fafafa]">
-      {/* Hero with button overlay */}
+      {/* Hero (includes SmartNavigator inside) */}
       <div className="relative">
         <Hero />
-   
       </div>
 
       {/* Builds Section */}
@@ -45,10 +47,10 @@ export default function Home() {
         className="py-16 px-6 bg-[#0A2342] text-white text-center"
       >
         <h3 className="text-2xl md:text-3xl font-bold text-[#FFD700] mb-4">
-          I didn’t just build a portfolio I engineered three. Each with its own stack. HTML. React. Flutter.
+          I didn’t just build a portfolio — I engineered three. HTML. React. Flutter.
         </h3>
         <p className="text-md md:text-lg text-gray-200 mb-10 max-w-3xl mx-auto">
-          Explore how each version brings the same design to life across three different platforms.
+          Explore how each version brings the same design to life across different platforms.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
@@ -69,7 +71,7 @@ export default function Home() {
                 <h4 className="text-xl font-semibold text-[#FFD700] mb-1">{build.title}</h4>
                 <p className="text-sm text-gray-300">{build.stack}</p>
               </div>
-            </a> 
+            </a>
           ))}
         </div>
       </section>
@@ -105,6 +107,9 @@ export default function Home() {
                 <FaGithub /> <span>GitHub</span>
               </a>
             </div>
+
+     
+
             <p className="text-gray-400">&copy; {new Date().getFullYear()} Cedric Evans. All rights reserved.</p>
           </div>
         </div>

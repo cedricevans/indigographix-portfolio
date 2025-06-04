@@ -14,6 +14,7 @@ import Seniorcare from './pages/case-studies/Seniorcare';
 import Hrbp from './pages/case-studies/HRBP';
 import Crm from './pages/case-studies/Crm';
 import Nih from './pages/case-studies/Nih';
+import Projects from './pages/Projects';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/works" element={<Works />} />
+           <Route path="/projects" element={<Projects />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/case-studies/trihealth" element={<TriHealth />} />
       <Route path="/case-studies/reactversion" element={<ReactVersion />} />
