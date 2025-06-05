@@ -10,7 +10,9 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-[#0A2342] text-white px-6 py-4 flex justify-between items-center shadow-md z-50 relative">
+
+    
+    <header className="bg-[#002b60] text-white px-6 py-4 flex justify-between items-center shadow-md z-50 relative">
       <h1 className="text-lg font-bold text-[#FFD700]">Cedric Evans</h1>
 
       {/* Desktop Nav */}
@@ -36,6 +38,7 @@ export default function Header() {
           <Link to="/about" onClick={handleLinkClick} className="block text-white hover:text-[#FFD700]">About</Link>
           <Link to="/works" onClick={handleLinkClick} className="block text-white hover:text-[#FFD700]">Portfolio</Link>
           <Link to="/contact" onClick={handleLinkClick} className="block text-white hover:text-[#FFD700]">Contact</Link>
+        
         </div>
       )}
     </header>

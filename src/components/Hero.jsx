@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Typewriter } from "react-simple-typewriter";
 import SmartAssistantPanel from "../components/SmartAssistantPanel";
@@ -24,12 +24,74 @@ export default function Hero() {
   const [panelOpen, setPanelOpen] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState("");
   const [typedQuestion, setTypedQuestion] = useState("");
+  const hasSpokenRef = useRef(false);
+
+  const welcomeMessage =
+    "Hi! My name is Cedric. I’m your AI Engineering Assistant, or AIEA for short. Select from the list or enter a question below.";
+
+  const speakMessage = (text) => {
+    const synth = window.speechSynthesis;
+    if (!synth) return;
+
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    const utterance = new SpeechSynthesisUtterance(text);
+    const voices = synth.getVoices();
+
+    let preferredVoice;
+    if (isSafari) {
+      preferredVoice = voices.find((v) => v.name === "Samantha");
+    } else {
+      preferredVoice =
+        voices.find((v) => v.lang === "en-GB" && v.name.toLowerCase().includes("male")) ||
+        voices.find((v) => v.lang === "en-GB") ||
+        voices[0];
+    }
+
+    if (preferredVoice) {
+      utterance.voice = preferredVoice;
+    }
+
+    utterance.rate = 1;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    synth.cancel();
+    synth.speak(utterance);
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % textSlides.length);
     }, 8000);
+
     const botDelay = setTimeout(() => setShowBot(true), 600);
+
+    const isDev = import.meta.env.DEV;
+    const shouldSpeak = !sessionStorage.getItem("hasSpoken") || isDev;
+
+    if (shouldSpeak && !hasSpokenRef.current) {
+      const speakWhenReady = () => {
+        const synth = window.speechSynthesis;
+        const voices = synth.getVoices();
+
+        const doSpeak = () => {
+          if (!hasSpokenRef.current) {
+            speakMessage(welcomeMessage);
+            hasSpokenRef.current = true;
+            if (!isDev) sessionStorage.setItem("hasSpoken", "true");
+          }
+        };
+
+        if (voices.length > 0) {
+          doSpeak();
+        } else {
+          synth.addEventListener("voiceschanged", doSpeak, { once: true });
+        }
+      };
+
+      setTimeout(speakWhenReady, 400);
+    }
+
     return () => {
       clearInterval(interval);
       clearTimeout(botDelay);
@@ -56,17 +118,18 @@ export default function Hero() {
   };
 
   return (
-    <div className="relative h-[90vh] overflow-hidden bg-[#0A2342]">
+    <div className="relative h-[95vh] overflow-hidden bg-[#0A2342] pb-10">
+      {/* Background */}
       <motion.div
         className="absolute inset-0 bg-center bg-cover z-0"
         style={{ backgroundImage: "url('/assets/hero1.jpeg')" }}
         animate={{ scale: [1, 1.05, 1], opacity: [1, 0.8, 1] }}
         transition={{ duration: 10, repeat: Infinity }}
       />
-
       <div className="absolute inset-0 bg-gradient-to-br from-[#0A2342]/80 to-black/70 z-10" />
 
-      <div className="relative z-20 flex flex-col justify-start items-center h-full text-center px-4 pt-20 md:pt-28">
+      {/* Main Content */}
+      <div className="relative z-20 flex flex-col justify-start items-center h-full text-center px-4 pt-16 md:pt-24">
         <AnimatePresence mode="wait">
           <motion.div
             key={index}
@@ -84,6 +147,7 @@ export default function Hero() {
           </motion.div>
         </AnimatePresence>
 
+        {/* AI Panel */}
         {showBot && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -106,9 +170,7 @@ export default function Hero() {
             {step >= 1 && (
               <h2 className="text-base md:text-lg mb-4 text-white font-medium">
                 <Typewriter
-                  words={[
-                    "Select from the list or enter a question below:",
-                  ]}
+                  words={["Select from the list or enter a question below:"]}
                   loop={1}
                   cursor
                   cursorStyle="|"
@@ -134,7 +196,7 @@ export default function Hero() {
                   ))}
                 </ul>
 
-                {/* Input Field */}
+                {/* Input */}
                 <div className="flex mt-2">
                   <input
                     type="text"
@@ -142,7 +204,7 @@ export default function Hero() {
                     onChange={(e) => setTypedQuestion(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleTypedQuestionSubmit()}
                     placeholder="Type your question here..."
-                    className="flex-1 px-3 py-2 text-sm text-yellow-400 rounded-l border border-gray-300"
+                    className="flex-1 px-3 py-2 text-sm rounded-l border border-gray-300 text-black"
                   />
                   <button
                     onClick={handleTypedQuestionSubmit}
@@ -151,12 +213,21 @@ export default function Hero() {
                     Ask
                   </button>
                 </div>
+
+                {/* Replay voice */}
+                <button
+                  onClick={() => speakMessage(welcomeMessage)}
+                  className="mt-4 text-sm px-4 py-2 border border-yellow-400 text-yellow-300 hover:bg-yellow-600/10 rounded"
+                >
+                  🔁 Replay Voice Intro
+                </button>
               </>
             )}
           </motion.div>
         )}
       </div>
 
+      {/* AI Assistant Panel */}
       <SmartAssistantPanel
         isOpen={panelOpen}
         onClose={() => setPanelOpen(false)}

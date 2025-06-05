@@ -44,7 +44,7 @@ export default function Home() {
       {/* Builds Section */}
       <section
         ref={buildsRef}
-        className="py-16 px-6 bg-[#0A2342] text-white text-center"
+        className="py-16 px-6 bg-[#002b60] text-white text-center"
       >
         <h3 className="text-2xl md:text-3xl font-bold text-[#FFD700] mb-4">
           I didn’t just build a portfolio — I engineered three. HTML. React. Flutter.
