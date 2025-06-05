@@ -12,7 +12,7 @@ const textSlides = [
 const suggestions = [
   "Show me Cedric’s latest projects.",
   "What experience does he have in healthcare?",
-  "Why was this portfolio built in 3 tech stacks?",
+  "What is the story behind this portfolio?",
   "Can I download his resume?",
   "What tech stack did he use?",
 ];
@@ -20,9 +20,10 @@ const suggestions = [
 export default function Hero() {
   const [index, setIndex] = useState(0);
   const [showBot, setShowBot] = useState(false);
-  const [step, setStep] = useState(0); // Controls animation steps
+  const [step, setStep] = useState(0);
   const [panelOpen, setPanelOpen] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState("");
+  const [typedQuestion, setTypedQuestion] = useState("");
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -47,9 +48,15 @@ export default function Hero() {
     setPanelOpen(true);
   };
 
+  const handleTypedQuestionSubmit = () => {
+    if (!typedQuestion.trim()) return;
+    setSelectedQuestion(typedQuestion.trim());
+    setPanelOpen(true);
+    setTypedQuestion("");
+  };
+
   return (
     <div className="relative h-[90vh] overflow-hidden bg-[#0A2342]">
-      {/* Background Image */}
       <motion.div
         className="absolute inset-0 bg-center bg-cover z-0"
         style={{ backgroundImage: "url('/assets/hero1.jpeg')" }}
@@ -57,10 +64,8 @@ export default function Hero() {
         transition={{ duration: 10, repeat: Infinity }}
       />
 
-      {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#0A2342]/80 to-black/70 z-10" />
 
-      {/* Hero Content */}
       <div className="relative z-20 flex flex-col justify-start items-center h-full text-center px-4 pt-20 md:pt-28">
         <AnimatePresence mode="wait">
           <motion.div
@@ -79,7 +84,6 @@ export default function Hero() {
           </motion.div>
         </AnimatePresence>
 
-        {/* AI Assistant Box */}
         {showBot && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -87,7 +91,6 @@ export default function Hero() {
             transition={{ delay: 0.5 }}
             className="mt-10 w-full max-w-2xl bg-white/5 border-l-4 border-[#FFD700] text-white p-6 rounded-lg shadow-lg text-left backdrop-blur"
           >
-            {/* 👋 Intro */}
             {step >= 0 && (
               <motion.h1
                 className="text-xl md:text-2xl font-bold mb-2 text-[#FFD700]"
@@ -100,12 +103,11 @@ export default function Hero() {
               </motion.h1>
             )}
 
-            {/* 💬 Typing Line */}
             {step >= 1 && (
               <h2 className="text-base md:text-lg mb-4 text-white font-medium">
                 <Typewriter
                   words={[
-                    "I'm here to help you explore Cedric’s work and skills. Try asking things like:",
+                    "Select from the list or enter a question below:",
                   ]}
                   loop={1}
                   cursor
@@ -115,28 +117,46 @@ export default function Hero() {
               </h2>
             )}
 
-            {/* ✅ Bullet Suggestions */}
             {step >= 2 && (
-              <ul className="space-y-2">
-                {suggestions.map((text, i) => (
-                  <motion.li
-                    key={i}
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.3 }}
-                    className="text-sm md:text-base hover:underline hover:cursor-pointer"
-                    onClick={() => handleSuggestionClick(text)}
+              <>
+                <ul className="space-y-2 mb-4">
+                  {suggestions.map((text, i) => (
+                    <motion.li
+                      key={i}
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.3 }}
+                      className="text-sm md:text-base hover:underline hover:cursor-pointer"
+                      onClick={() => handleSuggestionClick(text)}
+                    >
+                      • {text}
+                    </motion.li>
+                  ))}
+                </ul>
+
+                {/* Input Field */}
+                <div className="flex mt-2">
+                  <input
+                    type="text"
+                    value={typedQuestion}
+                    onChange={(e) => setTypedQuestion(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleTypedQuestionSubmit()}
+                    placeholder="Type your question here..."
+                    className="flex-1 px-3 py-2 text-sm text-yellow-400 rounded-l border border-gray-300"
+                  />
+                  <button
+                    onClick={handleTypedQuestionSubmit}
+                    className="px-4 bg-[#FFD700] text-sm font-semibold text-black rounded-r hover:bg-yellow-500"
                   >
-                    • {text}
-                  </motion.li>
-                ))}
-              </ul>
+                    Ask
+                  </button>
+                </div>
+              </>
             )}
           </motion.div>
         )}
       </div>
 
-      {/* Slide-Out Smart Assistant Panel */}
       <SmartAssistantPanel
         isOpen={panelOpen}
         onClose={() => setPanelOpen(false)}
