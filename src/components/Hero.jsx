@@ -25,6 +25,7 @@ export default function Hero() {
   const [selectedQuestion, setSelectedQuestion] = useState("");
   const [typedQuestion, setTypedQuestion] = useState("");
   const hasSpokenRef = useRef(false);
+  const recognitionRef = useRef(null);
 
   const welcomeMessage =
     "Hi! My name is Cedric. I’m your AI Engineering Assistant, or AIEA for short. Select from the list or enter a question below.";
@@ -59,6 +60,37 @@ export default function Hero() {
     synth.speak(utterance);
   };
 
+  const startVoiceRecognition = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Voice recognition is not supported in this browser.");
+      return;
+    }
+
+    if (!recognitionRef.current) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = "en-US";
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript.trim();
+        if (transcript) {
+          setTypedQuestion(transcript);
+          setTimeout(() => handleTypedQuestionSubmit(), 300);
+        }
+      };
+
+      recognition.onerror = (event) => {
+        console.error("Voice recognition error:", event.error);
+      };
+
+      recognitionRef.current = recognition;
+    }
+
+    recognitionRef.current.start();
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % textSlides.length);
@@ -70,26 +102,23 @@ export default function Hero() {
     const shouldSpeak = !sessionStorage.getItem("hasSpoken") || isDev;
 
     if (shouldSpeak && !hasSpokenRef.current) {
-      const speakWhenReady = () => {
+      let attempts = 0;
+
+      const trySpeak = () => {
         const synth = window.speechSynthesis;
         const voices = synth.getVoices();
 
-        const doSpeak = () => {
-          if (!hasSpokenRef.current) {
-            speakMessage(welcomeMessage);
-            hasSpokenRef.current = true;
-            if (!isDev) sessionStorage.setItem("hasSpoken", "true");
-          }
-        };
-
-        if (voices.length > 0) {
-          doSpeak();
+        if (voices.length > 0 || attempts >= 20) {
+          speakMessage(welcomeMessage);
+          hasSpokenRef.current = true;
+          if (!isDev) sessionStorage.setItem("hasSpoken", "true");
         } else {
-          synth.addEventListener("voiceschanged", doSpeak, { once: true });
+          attempts++;
+          setTimeout(trySpeak, 100);
         }
       };
 
-      setTimeout(speakWhenReady, 400);
+      trySpeak();
     }
 
     return () => {
@@ -181,7 +210,7 @@ export default function Hero() {
 
             {step >= 2 && (
               <>
-                <ul className="space-y-2 mb-4">
+                <ul className="space-y-2 mb-4 max-h-40 overflow-y-auto pr-2">
                   {suggestions.map((text, i) => (
                     <motion.li
                       key={i}
@@ -196,31 +225,39 @@ export default function Hero() {
                   ))}
                 </ul>
 
-                {/* Input */}
-                <div className="flex mt-2">
+                {/* Input + Ask button */}
+                <div className="flex flex-col sm:flex-row gap-2 mt-2 w-full">
                   <input
                     type="text"
                     value={typedQuestion}
                     onChange={(e) => setTypedQuestion(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleTypedQuestionSubmit()}
                     placeholder="Type your question here..."
-                    className="flex-1 px-3 py-2 text-sm rounded-l border border-gray-300 text-black"
+                    className="w-full sm:w-2/3 px-3 py-2 text-sm rounded border border-gray-300 text-yellow-400"
                   />
                   <button
                     onClick={handleTypedQuestionSubmit}
-                    className="px-4 bg-[#FFD700] text-sm font-semibold text-black rounded-r hover:bg-yellow-500"
+                    className="w-full sm:w-1/3 px-4 py-2 bg-[#FFD700] text-sm font-semibold text-black rounded hover:bg-yellow-500"
                   >
                     Ask
                   </button>
                 </div>
 
-                {/* Replay voice */}
-                <button
-                  onClick={() => speakMessage(welcomeMessage)}
-                  className="mt-4 text-sm px-4 py-2 border border-yellow-400 text-yellow-300 hover:bg-yellow-600/10 rounded"
-                >
-                  🔁 Replay Voice Intro
-                </button>
+                {/* Voice & Replay buttons */}
+                <div className="flex flex-col sm:flex-row gap-2 mt-3 w-full">
+                  <button
+                    onClick={startVoiceRecognition}
+                    className="w-full sm:w-1/2 text-sm px-4 py-2 border border-blue-400 text-blue-300 hover:bg-blue-600/10 rounded"
+                  >
+                    🎤 Ask with Voice
+                  </button>
+                  <button
+                    onClick={() => speakMessage(welcomeMessage)}
+                    className="w-full sm:w-1/2 text-sm px-4 py-2 border border-yellow-400 text-yellow-300 hover:bg-yellow-600/10 rounded"
+                  >
+                    🔁 Replay Voice Intro
+                  </button>
+                </div>
               </>
             )}
           </motion.div>
