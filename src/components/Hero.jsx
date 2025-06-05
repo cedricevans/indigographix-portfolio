@@ -24,6 +24,7 @@ export default function Hero() {
   const [panelOpen, setPanelOpen] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState("");
   const [typedQuestion, setTypedQuestion] = useState("");
+  const [loading, setLoading] = useState(true);
   const hasSpokenRef = useRef(false);
   const recognitionRef = useRef(null);
 
@@ -121,9 +122,12 @@ export default function Hero() {
       trySpeak();
     }
 
+    const loadingTimeout = setTimeout(() => setLoading(false), 4000);
+
     return () => {
       clearInterval(interval);
       clearTimeout(botDelay);
+      clearTimeout(loadingTimeout);
     };
   }, []);
 
@@ -148,7 +152,6 @@ export default function Hero() {
 
   return (
     <div className="relative h-[95vh] overflow-hidden bg-[#0A2342] pb-10">
-      {/* Background */}
       <motion.div
         className="absolute inset-0 bg-center bg-cover z-0"
         style={{ backgroundImage: "url('/assets/hero1.jpeg')" }}
@@ -157,7 +160,6 @@ export default function Hero() {
       />
       <div className="absolute inset-0 bg-gradient-to-br from-[#0A2342]/80 to-black/70 z-10" />
 
-      {/* Main Content */}
       <div className="relative z-20 flex flex-col justify-start items-center h-full text-center px-4 pt-16 md:pt-24">
         <AnimatePresence mode="wait">
           <motion.div
@@ -176,7 +178,6 @@ export default function Hero() {
           </motion.div>
         </AnimatePresence>
 
-        {/* AI Panel */}
         {showBot && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -197,18 +198,26 @@ export default function Hero() {
             )}
 
             {step >= 1 && (
-              <h2 className="text-base md:text-lg mb-4 text-white font-medium">
-                <Typewriter
-                  words={["Select from the list or enter a question below:"]}
-                  loop={1}
-                  cursor
-                  cursorStyle="|"
-                  typeSpeed={30}
-                />
-              </h2>
+              <>
+                <h2 className="text-base md:text-lg mb-2 text-white font-medium">
+                  <Typewriter
+                    words={["Select from the list or enter a question below:"]}
+                    loop={1}
+                    cursor
+                    cursorStyle="|"
+                    typeSpeed={30}
+                  />
+                </h2>
+
+                {loading && (
+                  <div className="text-sm text-yellow-400 animate-pulse mb-4">
+                    Retrieving interface data…
+                  </div>
+                )}
+              </>
             )}
 
-            {step >= 2 && (
+            {step >= 2 && !loading && (
               <>
                 <ul className="space-y-2 mb-4 max-h-40 overflow-y-auto pr-2">
                   {suggestions.map((text, i) => (
@@ -225,7 +234,6 @@ export default function Hero() {
                   ))}
                 </ul>
 
-                {/* Input + Ask button */}
                 <div className="flex flex-col sm:flex-row gap-2 mt-2 w-full">
                   <input
                     type="text"
@@ -243,7 +251,6 @@ export default function Hero() {
                   </button>
                 </div>
 
-                {/* Voice & Replay buttons */}
                 <div className="flex flex-col sm:flex-row gap-2 mt-3 w-full">
                   <button
                     onClick={startVoiceRecognition}
@@ -264,7 +271,6 @@ export default function Hero() {
         )}
       </div>
 
-      {/* AI Assistant Panel */}
       <SmartAssistantPanel
         isOpen={panelOpen}
         onClose={() => setPanelOpen(false)}
