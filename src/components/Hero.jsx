@@ -104,11 +104,9 @@ export default function Hero() {
 
     if (shouldSpeak && !hasSpokenRef.current) {
       let attempts = 0;
-
       const trySpeak = () => {
         const synth = window.speechSynthesis;
         const voices = synth.getVoices();
-
         if (voices.length > 0 || attempts >= 20) {
           speakMessage(welcomeMessage);
           hasSpokenRef.current = true;
@@ -118,12 +116,10 @@ export default function Hero() {
           setTimeout(trySpeak, 100);
         }
       };
-
       trySpeak();
     }
 
     const loadingTimeout = setTimeout(() => setLoading(false), 4000);
-
     return () => {
       clearInterval(interval);
       clearTimeout(botDelay);
@@ -208,7 +204,6 @@ export default function Hero() {
                     typeSpeed={30}
                   />
                 </h2>
-
                 {loading && (
                   <div className="text-sm text-yellow-400 animate-pulse mb-4">
                     Retrieving interface data…
@@ -251,16 +246,25 @@ export default function Hero() {
                   </button>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-2 mt-3 w-full">
+                {/* ✅ Unified Button Row */}
+                <div className="mt-4 w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <a
+                    href="/case-studies/SmartPortfolioCaseStudy"
+                    className="w-full sm:w-1/3 px-4 py-2 text-center text-sm font-semibold border rounded text-green-300 border-green-400 hover:bg-green-600/10"
+                  >
+                    🛠️ About this Portfolio
+                  </a>
+
                   <button
                     onClick={startVoiceRecognition}
-                    className="w-full sm:w-1/2 text-sm px-4 py-2 border border-blue-400 text-blue-300 hover:bg-blue-600/10 rounded"
+                    className="w-full sm:w-1/3 text-sm px-4 py-2 border border-blue-400 text-blue-300 hover:bg-blue-600/10 rounded"
                   >
                     🎤 Ask with Voice
                   </button>
+
                   <button
                     onClick={() => speakMessage(welcomeMessage)}
-                    className="w-full sm:w-1/2 text-sm px-4 py-2 border border-yellow-400 text-yellow-300 hover:bg-yellow-600/10 rounded"
+                    className="w-full sm:w-1/3 text-sm px-4 py-2 border border-yellow-400 text-yellow-300 hover:bg-yellow-600/10 rounded"
                   >
                     🔁 Replay Voice Intro
                   </button>
