@@ -1,74 +1,116 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 export default function SmartPortfolioCaseStudy() {
+  const [theme, setTheme] = useState('dark');
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme) setTheme(storedTheme);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.className = theme;
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
+  const isDark = theme === 'dark';
+
   return (
-    <div className="px-6 py-12 max-w-4xl mx-auto text-gray-900">
-      <h1 className="text-3xl md:text-5xl font-bold text-[#0A2342] mb-6">
-        How I Built This: The Smart Portfolio
-      </h1>
-      <p className="text-lg mb-6">
-        From static HTML to AI-powered interactivity — here's how I created a portfolio that not only shows my work, but thinks with the user.
-      </p>
+    <motion.section
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className={`min-h-screen px-6 py-20 ${isDark ? 'bg-[#0A2342] text-white' : 'bg-white text-gray-900'}`}
+    >
+      <div className="max-w-4xl mx-auto space-y-20">
+        <div className="flex justify-end">
+          <button
+            onClick={toggleTheme}
+            className="px-4 py-2 rounded-full border border-gray-400 text-sm font-medium shadow hover:shadow-lg transition-all duration-300 bg-opacity-20 backdrop-blur"
+          >
+            {isDark ? '🌞 Light Mode' : '🌙 Dark Mode'}
+          </button>
+        </div>
 
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold text-[#0A2342] mb-2">Project Overview</h2>
-        <p>
-          I wanted to build a portfolio that truly reflected my skills — not just visually, but in how it responds to users. This project combines frontend development, UX design, and lightweight AI interaction to create an assistant-like experience.
-        </p>
-      </section>
+        <header className="text-center">
+          <h1 className={`text-4xl font-bold mb-4 ${isDark ? 'text-[#FFD700]' : 'text-[#0A2342]'}`}>Smart Portfolio Case Study</h1>
+          <p className={`text-lg ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+            A portfolio isn’t just about showing what you’ve done — it should demonstrate how you think. In this case study, I walk through the process of turning a static website into an adaptive, AI-informed, multi-platform product experience.
+          </p>
+        </header>
 
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold text-[#0A2342] mb-2">Tech Stack Evolution</h2>
-        <ul className="list-disc pl-6 space-y-1">
-          <li><strong>HTML</strong> – for a quick-loading static build</li>
-          <li><strong>React</strong> – to support interactivity and routing</li>
-          <li><strong>Flutter</strong> – to showcase mobile-friendly UI builds</li>
-          <li><strong>Supabase</strong> – as a low-code backend to host smart assistant content</li>
-          <li><strong>Fuzzysort</strong> – for fast phrase matching without real AI</li>
-        </ul>
-      </section>
+        <section className="space-y-16">
+          {[{
+            title: "Background & Problem",
+            content: [
+              "The challenge was simple: traditional portfolios don’t scale. They provide screenshots, generic summaries, and minimal context. I needed a better way to communicate my multi-disciplinary strengths in design, frontend development, and applied AI.",
+              "Employers and collaborators want more than visuals — they want insight into how you think, adapt, and make decisions. My previous portfolio lacked that depth."
+            ]
+          }, {
+            title: "Strategy & Planning",
+            content: [
+              "I set out to build a modular, scalable system that didn’t just present my work — it *explained* it. Each version of the portfolio would serve a purpose:",
+              <ul className={`list-disc pl-5 space-y-2 mt-4 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                <li><strong>React Site:</strong> A dynamic, responsive frontend built with Vite + TailwindCSS v4</li>
+                <li><strong>Smart Assistant:</strong> A searchable AI layer using Supabase and Fuzzysort</li>
+                <li><strong>Flutter App:</strong> A native mobile-first version built to scale to app design</li>
+                <li><strong>HTML5 Site:</strong> A lightweight, semantic archive version for SEO and accessibility</li>
+                <li><strong>Case Studies:</strong> Interactive, narrative-driven deep dives into real projects</li>
+              </ul>
+            ]
+          }, {
+            title: "Implementation & Build",
+            content: [
+              "I began by structuring my React site into reusable components, optimized for responsiveness and performance. The site was styled with TailwindCSS v4, leveraging utility classes for speed and modularity.",
+              "The Smart Assistant was designed to simulate an AI experience. Using Supabase to store structured Q&A data, I integrated Fuzzysort to match user queries with relevant answers — ranging from project breakdowns to resume insights. The assistant feels conversational but operates purely on structured logic and keyword mapping.",
+              "The Flutter version showcased how the same content could be reorganized in a native mobile format — supporting app prototyping and platform consistency. The HTML5 site offered lean fallback for edge-case browsers, bots, or non-interactive sessions."
+            ]
+          }, {
+            title: "Results & Learnings",
+            content: [
+              <ul className={`list-disc pl-5 space-y-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                <li>Multi-version support helped me demonstrate versatility and platform fluency</li>
+                <li>AI-powered interaction provided clarity to visitors exploring specific questions</li>
+                <li>Modular content improved maintenance and allowed A/B testing of sections</li>
+                <li>The assistant became a conversation-starter in interviews and networking</li>
+              </ul>,
+              "The result is a living product — not a one-time build, but an adaptive platform I continue to evolve."
+            ]
+          }, {
+            title: "What’s Next",
+            content: [
+              <ul className={`list-disc pl-5 space-y-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                <li>Integrate real-time AI (OpenRouter or LLM) to enhance assistant interactivity</li>
+                <li>Add voice synthesis and speech-to-text options for accessibility</li>
+                <li>Implement vector search for deeper case study linking</li>
+                <li>Use analytics to personalize suggestions and UI behavior</li>
+                <li>Create a content management dashboard to update knowledge base live</li>
+              </ul>
+            ]
+          }].map((section, index) => (
+            <div key={index}>
+              <h2 className={`text-xl font-bold uppercase tracking-widest mb-3 ${isDark ? 'text-[#FFD700]' : 'text-[#0A2342]'}`}>{section.title}</h2>
+              <div className={`${isDark ? 'bg-white/5' : 'bg-gray-100'} rounded-lg p-6`}>
+                {section.content.map((text, i) => (
+                  <div key={i} className={`mt-4 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>{text}</div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
 
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold text-[#0A2342] mb-2">Building the Smart Assistant</h2>
-        <p className="mb-4">
-          The assistant is powered by a simple Supabase table of FAQs. I created a scoring algorithm using Fuzzysort and JSON-parsed keywords/phrases to detect user intent. Manual overrides help answer common questions with high accuracy.
-        </p>
-        <p>
-          When a user types or selects a question, the assistant finds the best match using weighted scores, then returns a tailored answer. It feels smart, but runs on basic logic and a free database.
-        </p>
-      </section>
-
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold text-[#0A2342] mb-2">UX Decisions</h2>
-        <ul className="list-disc pl-6 space-y-1">
-          <li>Typewriter intro mimics a real assistant's "thinking"</li>
-          <li>Preloaded questions encourage discovery</li>
-          <li>Slide-out assistant panel respects layout space</li>
-          <li>Mobile-friendly, fully accessible layout</li>
-        </ul>
-      </section>
-
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold text-[#0A2342] mb-2">Challenges</h2>
-        <p className="mb-2">
-          Getting phrase-matching accurate without AI was tricky. Resume download links broke due to path issues. And designing for both mobile and desktop users required careful testing.
-        </p>
-      </section>
-
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold text-[#0A2342] mb-2">What I Learned</h2>
-        <ul className="list-disc pl-6 space-y-1">
-          <li>Even basic logic can feel intelligent if paired with good UX</li>
-          <li>Supabase is powerful for lightweight AI-like apps</li>
-          <li>User context matters more than feature count</li>
-        </ul>
-      </section>
-
-      <div className="mt-10 text-center">
-        <a href="/projects" className="text-[#0A2342] font-semibold underline hover:text-yellow-600">
-          ← View All Projects
-        </a>
+        <footer className="text-center border-t border-gray-700 pt-10">
+          <h3 className="text-xl font-semibold mb-2 text-[#FFD700]">Conclusion</h3>
+          <p className={`${isDark ? 'text-gray-300' : 'text-gray-700'} mb-4`}>
+            This case study is one part of a larger journey. My goal is to continue blurring the line between design, development, and AI — and use this portfolio as a testing ground for what's next in human-centered, intelligent interfaces.
+          </p>
+        </footer>
       </div>
-    </div>
+    </motion.section>
   );
 }
