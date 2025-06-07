@@ -14,6 +14,16 @@ export default function SmartAssistantPanel({ isOpen, onClose, initialQuestion }
   const [aiData, setAiData] = useState([]);
   const chatEndRef = useRef(null);
 
+  useEffect(() => {
+    const setVH = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+    setVH();
+    window.addEventListener('resize', setVH);
+    return () => window.removeEventListener('resize', setVH);
+  }, []);
+
   const handleUserInput = (inputText) => {
     const userInput = inputText.toLowerCase();
     const cleaned = userInput.replace(/[^\w\s]/gi, "").trim();
@@ -25,9 +35,7 @@ export default function SmartAssistantPanel({ isOpen, onClose, initialQuestion }
       "what is the story behind this portfolio?": `Cedric built this portfolio using HTML, React, and Flutter to show his full-stack flexibility and how UX thinking applies across both web and mobile environments. <a href='/case-studies/SmartPortfolioCaseStudy' class='text-blue-600 underline'>Read the full Smart Portfolio Case Study.</a>`
     };
 
-    if (manualOverrides[cleaned]) {
-      return manualOverrides[cleaned];
-    }
+    if (manualOverrides[cleaned]) return manualOverrides[cleaned];
 
     const phraseMatched = aiData.find(entry =>
       (typeof entry.phrases === "string" ? JSON.parse(entry.phrases) : entry.phrases || []).some(p =>
@@ -43,7 +51,7 @@ export default function SmartAssistantPanel({ isOpen, onClose, initialQuestion }
         keywords = typeof entry.keywords === "string" ? JSON.parse(entry.keywords) : entry.keywords || [];
         phrases = typeof entry.phrases === "string" ? JSON.parse(entry.phrases) : entry.phrases || [];
       } catch (e) {
-        console.warn("❗ Invalid JSON in entry:", entry.id);
+        console.warn("\u2757 Invalid JSON in entry:", entry.id);
       }
 
       return {
@@ -70,11 +78,8 @@ export default function SmartAssistantPanel({ isOpen, onClose, initialQuestion }
   useEffect(() => {
     async function fetchAIKnowledge() {
       const { data, error } = await supabase.from("ai_knowledge").select("*");
-      if (error) {
-        console.error("❌ Supabase fetch error:", error.message);
-      } else {
-        setAiData(data);
-      }
+      if (error) console.error("\u274C Supabase fetch error:", error.message);
+      else setAiData(data);
     }
     fetchAIKnowledge();
   }, []);
@@ -91,20 +96,8 @@ export default function SmartAssistantPanel({ isOpen, onClose, initialQuestion }
   }, [initialQuestion, aiData]);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
   }, [messages]);
-
-  const onSend = () => {
-    if (!input.trim()) return;
-    const userInput = input.trim();
-    setMessages((prev) => [...prev, { sender: "user", text: userInput }]);
-    setInput("");
-
-    setTimeout(() => {
-      const botReply = handleUserInput(userInput);
-      setMessages((prev) => [...prev, { sender: "bot", text: botReply }]);
-    }, 500);
-  };
 
   return (
     <AnimatePresence>
@@ -114,18 +107,17 @@ export default function SmartAssistantPanel({ isOpen, onClose, initialQuestion }
           animate={{ y: 0 }}
           exit={{ y: "100%" }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="fixed bottom-0 right-0 w-full max-w-full sm:max-w-[90vw] md:max-w-[400px] h-[85vh] sm:h-[80vh] md:h-full bg-white text-black z-50 shadow-2xl flex flex-col border-t border-gray-300"
+          className="fixed bottom-0 right-0 w-full sm:w-[90vw] md:w-[400px] bg-white text-black z-50 shadow-2xl flex flex-col border-t border-gray-300"
+          style={{ height: 'calc(var(--vh, 1vh) * 100)' }}
         >
-          {/* Header */}
-          <div className="p-4 flex justify-between items-center bg-[#0A2342] text-white sticky top-0 z-10">
+          <div className="sticky top-0 z-10 p-4 flex justify-between items-center bg-[#0A2342] text-white">
             <h2 className="text-base font-semibold">Smart Assistant</h2>
             <button onClick={onClose} className="text-sm hover:underline hover:text-yellow-400">
               Close
             </button>
           </div>
 
-          {/* Chat Area */}
-          <div className="flex-1 p-4 space-y-2 overflow-y-auto text-sm">
+          <div className="flex-1 p-4 space-y-2 overflow-y-auto text-sm pb-28 sm:pb-6">
             {messages.map((msg, i) => (
               <div
                 key={i}
@@ -140,8 +132,7 @@ export default function SmartAssistantPanel({ isOpen, onClose, initialQuestion }
             <div ref={chatEndRef} />
           </div>
 
-          {/* Input */}
-          <div className="sticky bottom-0 bg-white border-t border-gray-200 p-2 z-10 flex">
+          <div className="sticky bottom-0 bg-white flex border-t border-gray-200 p-2">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -150,7 +141,16 @@ export default function SmartAssistantPanel({ isOpen, onClose, initialQuestion }
               className="flex-1 p-2 text-sm outline-none border border-gray-300 rounded-l"
             />
             <button
-              onClick={onSend}
+              onClick={() => {
+                if (!input.trim()) return;
+                const userInput = input.trim();
+                setMessages((prev) => [...prev, { sender: "user", text: userInput }]);
+                setInput("");
+                setTimeout(() => {
+                  const botReply = handleUserInput(userInput);
+                  setMessages((prev) => [...prev, { sender: "bot", text: botReply }]);
+                }, 500);
+              }}
               className="bg-[#FFD700] px-4 text-sm font-semibold hover:bg-yellow-500 rounded-r"
             >
               Send
