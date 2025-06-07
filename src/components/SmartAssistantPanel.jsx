@@ -12,10 +12,11 @@ export default function SmartAssistantPanel({ isOpen, onClose, initialQuestion }
   ]);
   const [input, setInput] = useState("");
   const [aiData, setAiData] = useState([]);
-  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const chatEndRef = useRef(null);
 
-  const handleUserInput = (inputText) => {
+  const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+
+  const handleUserInput = async (inputText) => {
     const userInput = inputText.toLowerCase();
     const cleaned = userInput.replace(/[^\w\s]/gi, "").trim();
 
@@ -63,6 +64,26 @@ export default function SmartAssistantPanel({ isOpen, onClose, initialQuestion }
       return results[0].obj.answer;
     }
 
+    // Fallback to Gemini
+    if (GEMINI_API_KEY) {
+      try {
+        const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + GEMINI_API_KEY, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: inputText }] }],
+          }),
+        });
+        const data = await res.json();
+        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "I'm not sure how to answer that.";
+        console.log("🔁 Gemini used for response:", reply);
+        return reply;
+      } catch (err) {
+        console.error("❌ Gemini API error:", err.message);
+        return "I couldn't fetch an answer right now. Please try again shortly.";
+      }
+    }
+
     return `That’s a great question! Cedric has worked across many industries. Try checking out the 
       <a href='/about' class='text-blue-600 underline'>About</a> or 
       <a href='/projects' class='text-blue-600 underline'>Projects</a> page.`;
@@ -82,12 +103,14 @@ export default function SmartAssistantPanel({ isOpen, onClose, initialQuestion }
 
   useEffect(() => {
     if (initialQuestion && aiData.length > 0) {
-      const reply = handleUserInput(initialQuestion);
-      setMessages((prev) => [
-        ...prev,
-        { sender: "user", text: initialQuestion },
-        { sender: "bot", text: reply },
-      ]);
+      (async () => {
+        const reply = await handleUserInput(initialQuestion);
+        setMessages((prev) => [
+          ...prev,
+          { sender: "user", text: initialQuestion },
+          { sender: "bot", text: reply },
+        ]);
+      })();
     }
   }, [initialQuestion, aiData]);
 
@@ -95,16 +118,14 @@ export default function SmartAssistantPanel({ isOpen, onClose, initialQuestion }
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const onSend = () => {
+  const onSend = async () => {
     if (!input.trim()) return;
     const userInput = input.trim();
     setMessages((prev) => [...prev, { sender: "user", text: userInput }]);
     setInput("");
 
-    setTimeout(() => {
-      const botReply = handleUserInput(userInput);
-      setMessages((prev) => [...prev, { sender: "bot", text: botReply }]);
-    }, 500);
+    const botReply = await handleUserInput(userInput);
+    setMessages((prev) => [...prev, { sender: "bot", text: botReply }]);
   };
 
   return (
@@ -115,9 +136,7 @@ export default function SmartAssistantPanel({ isOpen, onClose, initialQuestion }
           animate={{ y: 0 }}
           exit={{ y: "100%" }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className={`fixed bottom-0 right-0 w-full sm:w-[90vw] md:w-[400px] z-50 bg-white text-black shadow-2xl flex flex-col border-t border-gray-300 ${
-            isKeyboardOpen ? "h-[80vh]" : "h-[70vh] md:h-[100vh]"
-          }`}
+          className="fixed bottom-0 right-0 w-full sm:w-[90vw] md:w-[400px] sm:h-[70vh] md:h-full bg-white text-black z-50 shadow-2xl flex flex-col border-t border-gray-300"
         >
           {/* Header */}
           <div className="p-4 flex justify-between items-center bg-[#0A2342] text-white">
@@ -148,12 +167,9 @@ export default function SmartAssistantPanel({ isOpen, onClose, initialQuestion }
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onFocus={() => setIsKeyboardOpen(true)}
-              onBlur={() => setIsKeyboardOpen(false)}
               onKeyDown={(e) => e.key === "Enter" && onSend()}
               placeholder="Ask Cedric anything..."
               className="flex-1 p-2 text-sm outline-none border border-gray-300 rounded-l"
-              style={{ fontSize: "16px" }} // prevent iOS zoom
             />
             <button
               onClick={onSend}

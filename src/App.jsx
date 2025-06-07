@@ -33,7 +33,7 @@ function App() {
   }
 
   fetchAIResponses();
-}, []);
+}, []);;0
   return (
     <>
       <Header />
@@ -58,3 +58,6 @@ function App() {
 }
 
 export default App;
+
+
+
